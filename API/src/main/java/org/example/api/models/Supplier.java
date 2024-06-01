@@ -33,6 +33,6 @@ public class Supplier {
     @NotBlank
     private String email;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 }

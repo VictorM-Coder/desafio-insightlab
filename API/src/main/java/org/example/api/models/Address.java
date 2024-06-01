@@ -33,6 +33,9 @@ public class Address {
     private String city;
 
     @NotBlank
+    private String state;
+
+    @NotBlank
     @Pattern(regexp = "(^\\d{5})-?(\\d{3}$)")
     private String cep;
 }
