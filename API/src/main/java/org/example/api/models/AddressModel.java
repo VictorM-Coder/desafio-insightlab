@@ -1,9 +1,6 @@
 package org.example.api.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -13,7 +10,8 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class Address {
+@Table(name = "address_tb")
+public class AddressModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

@@ -1,7 +1,6 @@
 package org.example.api.controllers;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.example.api.dtos.SupplierRequest;
 import org.example.api.services.SupplierService;
 import org.springframework.http.HttpStatus;
@@ -13,9 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("suppliers")
-@RequiredArgsConstructor
 public class SupplierController {
     private final SupplierService supplierService;
+
+    public SupplierController(SupplierService supplierService) {
+        this.supplierService = supplierService;
+    }
+
     @PostMapping
     public ResponseEntity<Void> post(@RequestBody @Valid SupplierRequest supplierRequest) {
         supplierService.save(supplierRequest);

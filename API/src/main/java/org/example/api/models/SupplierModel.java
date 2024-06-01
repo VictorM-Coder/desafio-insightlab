@@ -10,9 +10,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 @Data
 @Entity
-public class Supplier {
+@Table(name = "supplier-tb")
+public class SupplierModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -34,5 +36,5 @@ public class Supplier {
     private String email;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Address address;
+    private AddressModel address;
 }
