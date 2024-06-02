@@ -58,4 +58,16 @@ public class SupplierController {
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(
+            @PathVariable @NotNull UUID id,
+            @RequestBody @Valid SupplierRequest supplierRequest
+    ) {
+        supplierService.update(id, supplierRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }

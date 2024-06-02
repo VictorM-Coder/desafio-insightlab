@@ -11,8 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -46,13 +46,26 @@ public class SupplierService {
     }
 
     public SupplierResponse findById(UUID id) {
-        SupplierModel supplierModel = supplierRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Supplier not found"));
+        SupplierModel supplierModel = findByIdOrThrowsEntityNotFoundException(id);
 
         return supplierMapper.modelToResponse(supplierModel);
     }
 
     public void deleteById(UUID id) {
         supplierRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void update(UUID id, SupplierRequest supplierRequest) {
+        findByIdOrThrowsEntityNotFoundException(id);
+        final var supplierToBeUpdated =  supplierMapper.requestToModel(supplierRequest);
+        
+        supplierToBeUpdated.setId(id);
+        supplierRepository.save(supplierToBeUpdated);
+    }
+
+    private SupplierModel findByIdOrThrowsEntityNotFoundException(UUID id) {
+        return supplierRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Supplier not found"));
     }
 }
