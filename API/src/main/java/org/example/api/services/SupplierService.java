@@ -52,6 +52,7 @@ public class SupplierService {
     }
 
     public void deleteById(UUID id) {
+        findByIdOrThrowsEntityNotFoundException(id);
         supplierRepository.deleteById(id);
     }
 
