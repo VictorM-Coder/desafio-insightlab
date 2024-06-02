@@ -36,4 +36,21 @@ public class AddressModel {
     @NotBlank
     @Pattern(regexp = "(^\\d{5})-?(\\d{3}$)")
     private String cep;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(street).append(", ").append(number);
+
+        if (additionalInfo != null && !additionalInfo.isEmpty()) {
+            sb.append(", ").append(additionalInfo);
+        }
+
+        sb.append(", ").append(neighborhood)
+                .append(", ").append(city)
+                .append(", ").append(state)
+                .append(", ").append(cep);
+
+        return sb.toString();
+    }
 }

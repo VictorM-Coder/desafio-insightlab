@@ -1,6 +1,7 @@
 package org.example.api.services;
 
-import org.example.api.dtos.SupplierRequest;
+import org.example.api.dtos.requests.SupplierRequest;
+import org.example.api.dtos.responses.SupplierResponse;
 import org.example.api.mappers.SupplierMapper;
 import org.example.api.repositories.SupplierRepository;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,9 @@ public class SupplierService {
         this.supplierRepository = supplierRepository;
     }
 
-    public void save(SupplierRequest supplierRequest) {
+    public SupplierResponse save(SupplierRequest supplierRequest) {
         final var supplier = supplierMapper.requestToModel(supplierRequest);
-        supplierRepository.save(supplier);
+        final var supplierSaved = supplierRepository.save(supplier);
+        return supplierMapper.modelToResponse(supplierSaved);
     }
 }

@@ -1,7 +1,8 @@
 package org.example.api.controllers;
 
 import jakarta.validation.Valid;
-import org.example.api.dtos.SupplierRequest;
+import org.example.api.dtos.requests.SupplierRequest;
+import org.example.api.dtos.responses.SupplierResponse;
 import org.example.api.services.SupplierService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,11 @@ public class SupplierController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> post(@RequestBody @Valid SupplierRequest supplierRequest) {
-        supplierService.save(supplierRequest);
+    public ResponseEntity<SupplierResponse> post(@RequestBody @Valid SupplierRequest supplierRequest) {
+        final var supplierResponse = supplierService.save(supplierRequest);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .build();
+                .body(supplierResponse);
     }
 }
