@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SupplierService {
-    private static int PAGE_SIZE = 12;
+    private static final int PAGE_SIZE = 12;
     private final SupplierRepository supplierRepository;
     private static final SupplierMapper supplierMapper = SupplierMapper.INSTANCE;
 
