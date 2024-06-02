@@ -3,13 +3,13 @@ package org.example.api.controllers;
 import jakarta.validation.Valid;
 import org.example.api.dtos.requests.SupplierRequest;
 import org.example.api.dtos.responses.SupplierResponse;
+import org.example.api.dtos.responses.SuppliersPageResponse;
 import org.example.api.services.SupplierService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("suppliers")
@@ -27,5 +27,14 @@ public class SupplierController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(supplierResponse);
+    }
+
+    @GetMapping()
+    public ResponseEntity<SuppliersPageResponse> getAll(@RequestParam(name = "page", defaultValue = "1") int page) {
+        final var pageResponse = supplierService.getAll(page-1);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pageResponse);
     }
 }
