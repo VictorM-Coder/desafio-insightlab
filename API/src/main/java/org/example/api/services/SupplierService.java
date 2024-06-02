@@ -1,5 +1,6 @@
 package org.example.api.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.api.dtos.requests.SupplierRequest;
 import org.example.api.dtos.responses.SupplierResponse;
 import org.example.api.dtos.responses.SuppliersPageResponse;
@@ -10,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class SupplierService {
@@ -39,5 +43,12 @@ public class SupplierService {
                 .toList();
 
         return new SuppliersPageResponse(suppliersResponse, pageNumber+1, totalPages, PAGE_SIZE);
+    }
+
+    public SupplierResponse findById(UUID id) {
+        SupplierModel supplierModel = supplierRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Supplier not found"));
+
+        return supplierMapper.modelToResponse(supplierModel);
     }
 }

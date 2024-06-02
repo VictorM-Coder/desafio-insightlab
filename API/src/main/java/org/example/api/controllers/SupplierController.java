@@ -1,6 +1,8 @@
 package org.example.api.controllers;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.example.api.dtos.requests.SupplierRequest;
 import org.example.api.dtos.responses.SupplierResponse;
 import org.example.api.dtos.responses.SuppliersPageResponse;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("suppliers")
@@ -36,5 +39,14 @@ public class SupplierController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(pageResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SupplierResponse> getById(@PathVariable @NotNull UUID id) {
+        final var supplierResponse = supplierService.findById(id);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(supplierResponse);
     }
 }
