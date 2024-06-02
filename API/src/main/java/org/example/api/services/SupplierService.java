@@ -51,4 +51,8 @@ public class SupplierService {
 
         return supplierMapper.modelToResponse(supplierModel);
     }
+
+    public void deleteById(UUID id) {
+        supplierRepository.deleteById(id);
+    }
 }

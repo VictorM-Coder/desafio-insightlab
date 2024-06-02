@@ -49,4 +49,13 @@ public class SupplierController {
                 .status(HttpStatus.OK)
                 .body(supplierResponse);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable @NotNull UUID id) {
+        supplierService.deleteById(id);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }
