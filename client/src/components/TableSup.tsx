@@ -1,17 +1,8 @@
 import {Button, Dropdown, MenuProps, Table, TableProps} from "antd";
-
-
-interface DataType {
-    id: string,
-    name: string,
-    companyName: string,
-    cnpj: string,
-    email: string,
-    address: string
-}
+import SupplierTypeResponse from "../types/SupplierTypeResponse.ts";
 
 function TableSup() {
-    const tableDate: DataType[] = [
+    const tableDate: SupplierTypeResponse[] = [
         {
             "id": "1a2b3c4d-5e6f-7g8h-9i10-j11k12l13m14",
             "name": "Alice Johnson",
@@ -54,7 +45,7 @@ function TableSup() {
         }
     ]
 
-    const columns: TableProps<DataType>['columns'] = [
+    const columns: TableProps<SupplierTypeResponse>['columns'] = [
         {
             title: 'Name',
             dataIndex: 'name',
