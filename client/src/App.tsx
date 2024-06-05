@@ -1,19 +1,19 @@
 import './App.css'
-import HeaderSup from "./components/HeaderSup.tsx";
-import TableSup from "./components/TableSup.tsx";
-import {Flex, Space} from "antd";
+import HeaderSup from './components/HeaderSup.tsx'
+import TableSup from './components/TableSup.tsx'
+import { Flex, Space } from 'antd'
 
 function App() {
-  return (
-    <div className="App">
-        <Flex justify="center">
-            <Space size={40} direction="vertical">
-                <HeaderSup />
-                <TableSup />
-            </Space>
-        </Flex>
-    </div>
-  )
+    return (
+        <div className="App">
+            <Flex justify="center">
+                <Space size={40} direction="vertical">
+                    <HeaderSup />
+                    <TableSup />
+                </Space>
+            </Flex>
+        </div>
+    )
 }
 
 export default App

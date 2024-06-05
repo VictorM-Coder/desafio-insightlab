@@ -1,18 +1,18 @@
 interface SupplierTypeRequest {
-    id: string,
-    name: string,
-    companyName: string,
-    cnpj: string,
-    email: string,
+    id: string
+    name: string
+    companyName: string
+    cnpj: string
+    email: string
     address: {
-        street: string,
+        street: string
         number: number
-        additionalInfo: string,
-        neighborhood: string,
-        city: string,
+        additionalInfo: string
+        neighborhood: string
+        city: string
         state: string
         cep: string
     }
 }
 
-export default SupplierTypeRequest;
+export default SupplierTypeRequest
