@@ -1,12 +1,17 @@
 import './App.css'
 import HeaderSup from "./components/HeaderSup.tsx";
 import TableSup from "./components/TableSup.tsx";
+import {Flex, Space} from "antd";
 
 function App() {
   return (
     <div className="App">
-        <HeaderSup />
-        <TableSup />
+        <Flex justify="center">
+            <Space size={40} direction="vertical">
+                <HeaderSup />
+                <TableSup />
+            </Space>
+        </Flex>
     </div>
   )
 }

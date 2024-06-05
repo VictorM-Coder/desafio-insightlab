@@ -55,6 +55,7 @@ function TableSup() {
             title: 'Company',
             dataIndex: 'companyName',
             key: 'companyName',
+            responsive: ["sm"]
         },
         {
             title: 'CNPJ',
