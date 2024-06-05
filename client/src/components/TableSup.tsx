@@ -1,18 +1,26 @@
-import {
-    Button,
-    Dropdown,
-    MenuProps,
-    notification,
-    Table,
-    TableProps,
-} from 'antd'
+import { notification, Table, TableProps } from 'antd'
 import SupplierTypeResponse from '../types/SupplierTypeResponse.ts'
 import { useEffect, useState } from 'react'
 import { SupplierService } from '../services/SupplierService.ts'
 import { IconType } from 'antd/es/notification/interface'
+import ActionButtonSup from './ActionButtonSup.tsx'
+import { OnDeletedEvent } from '../events/OnDeletedEvent.ts'
 
 function TableSup() {
+    //onMount
     useEffect(() => {
+        const handleDeleteSupplierEvent = (
+            event: CustomEvent<OnDeletedEvent>,
+        ) => {
+            removeSupplier(event.detail.supplierId)
+            openNotification('Fornecedor apagado com sucesso', '', 'success')
+        }
+
+        document.addEventListener(
+            'onDeletedSupplier',
+            handleDeleteSupplierEvent as EventListener,
+        )
+
         const getAll = async () => {
             await SupplierService.getAll()
                 .then((response) => {
@@ -28,7 +36,20 @@ function TableSup() {
                 })
         }
         getAll()
+
+        return () => {
+            document.removeEventListener(
+                'onDeletedSupplier',
+                handleDeleteSupplierEvent as EventListener,
+            )
+        }
     }, [])
+
+    const removeSupplier = (supplierId: string) => {
+        setSuppliers((prevSuppliers) =>
+            prevSuppliers.filter((supplier) => supplier.id !== supplierId),
+        )
+    }
 
     const [api, contextHolder] = notification.useNotification()
 
@@ -77,31 +98,11 @@ function TableSup() {
         },
         {
             title: 'Actions',
-            dataIndex: 'actions',
             key: 'actions',
-            render: () => {
-                return (
-                    <Dropdown menu={{ items }} placement="bottom" arrow>
-                        <Button>Actions</Button>
-                    </Dropdown>
-                )
+            dataIndex: 'actions',
+            render: (_, { id }) => {
+                return <ActionButtonSup supplierId={id} />
             },
-        },
-    ]
-
-    const items: MenuProps['items'] = [
-        {
-            key: '1',
-            label: 'Show Details',
-        },
-        {
-            key: '2',
-            label: 'Edit',
-        },
-        {
-            key: '3',
-            danger: true,
-            label: 'Delete',
         },
     ]
 

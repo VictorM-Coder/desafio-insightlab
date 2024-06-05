@@ -9,4 +9,7 @@ export const SupplierService = {
             },
         })
     },
+    async delete(id: string) {
+        return await api.delete<SuppliersPageTypeResponse>(id)
+    },
 }
