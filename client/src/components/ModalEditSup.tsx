@@ -18,10 +18,10 @@ interface Props {
 }
 
 export interface ModalSupInterface {
-    showModal: (supplierRequest: SupplierTypeRequest) => void
+    showModal: (supplierRequest: SupplierTypeRequest | null) => void
 }
 
-const ModalSup = forwardRef(({ title }: Props, ref) => {
+const ModalEditSup = forwardRef(({ title }: Props, ref) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [supplier, setSupplier] = useState({} as SupplierTypeRequest)
     const [isDisabled, setDisabled] = useState(false)
@@ -38,10 +38,6 @@ const ModalSup = forwardRef(({ title }: Props, ref) => {
             setIsModalOpen(false)
         },
     }))
-
-    const handleOk = () => {
-        setIsModalOpen(false)
-    }
 
     const handleCancel = () => {
         setIsModalOpen(false)
@@ -269,4 +265,4 @@ const ModalSup = forwardRef(({ title }: Props, ref) => {
     )
 })
 
-export default ModalSup
+export default ModalEditSup

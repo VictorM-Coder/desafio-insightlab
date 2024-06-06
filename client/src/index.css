@@ -1,3 +1,27 @@
 .ant-modal-header .ant-modal-title {
     font-size: 1.5em;
 }
+
+.cell-attribute, .cell-data, .cell-header {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.table-sup{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cell-attribute {
+    font-weight: bold;
+}
+
+.row-sup:hover {background-color: #ddd;}
+
+.theader-sup {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #1677ff;
+    color: white;
+}
