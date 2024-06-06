@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react'
 import { SupplierService } from '../services/SupplierService.ts'
 import { IconType } from 'antd/es/notification/interface'
 import ActionButtonSup from './ActionButtonSup.tsx'
-import { OnDeletedEvent } from '../events/OnDeletedEvent.ts'
+import { OnDeletedEvent, OnUpdatedEvent } from '../events/Events.ts'
+import SupplierTypeRequest from '../types/SupplierTypeRequest.ts'
+import { mapSupplierTypeRequestToResponse } from '../utils/SupplierMapper.ts'
 
 function TableSup() {
     //onMount
@@ -16,9 +18,21 @@ function TableSup() {
             openNotification('Fornecedor apagado com sucesso', '', 'success')
         }
 
+        const handleUpdateSupplierEvent = (
+            event: CustomEvent<OnUpdatedEvent>,
+        ) => {
+            updateSupplier(event.detail.supplierUpdated)
+            openNotification('Fornecedor atualizado com sucesso', '', 'success')
+        }
+
         document.addEventListener(
             'onDeletedSupplier',
             handleDeleteSupplierEvent as EventListener,
+        )
+
+        document.addEventListener(
+            'onUpdatedSupplier',
+            handleUpdateSupplierEvent as EventListener,
         )
 
         const getAll = async () => {
@@ -42,6 +56,10 @@ function TableSup() {
                 'onDeletedSupplier',
                 handleDeleteSupplierEvent as EventListener,
             )
+            document.removeEventListener(
+                'onUpdatedSupplier',
+                handleUpdateSupplierEvent as EventListener,
+            )
         }
     }, [])
 
@@ -49,6 +67,20 @@ function TableSup() {
         setSuppliers((prevSuppliers) =>
             prevSuppliers.filter((supplier) => supplier.id !== supplierId),
         )
+    }
+
+    const updateSupplier = (supplierTypeRequest: SupplierTypeRequest) => {
+        const supplierTypeResponse =
+            mapSupplierTypeRequestToResponse(supplierTypeRequest)
+        const index = suppliers.findIndex(
+            (supplier) => supplier.id === supplierTypeResponse.id,
+        )
+
+        setSuppliers((prevSuppliers) => {
+            const newSuppliers = [...prevSuppliers]
+            newSuppliers[index] = supplierTypeResponse
+            return newSuppliers
+        })
     }
 
     const [api, contextHolder] = notification.useNotification()

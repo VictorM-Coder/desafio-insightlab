@@ -11,9 +11,12 @@ export const SupplierService = {
         })
     },
     async delete(id: string) {
-        return await api.delete<SuppliersPageTypeResponse>(id)
+        return await api.delete(id)
     },
     async findById(id: string) {
         return await api.get<SupplierTypeRequest>(id)
+    },
+    async update(id: string, supplier: SupplierTypeRequest) {
+        return await api.put(id, supplier)
     },
 }

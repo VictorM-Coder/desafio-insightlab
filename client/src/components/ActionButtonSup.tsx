@@ -1,9 +1,9 @@
 import { Button, Dropdown, MenuProps, notification } from 'antd'
 import { SupplierService } from '../services/SupplierService.ts'
-import { OnDeletedEvent } from '../events/OnDeletedEvent.ts'
+import { OnDeletedEvent } from '../events/Events.ts'
 import ModalEditSup, { ModalSupInterface } from './ModalEditSup.tsx'
 import { useRef } from 'react'
-import ModalShowSup from "./ModalShowSup.tsx";
+import ModalShowSup from './ModalShowSup.tsx'
 
 interface Props {
     supplierId: string
@@ -34,16 +34,40 @@ function ActionButtonSup({ supplierId }: Props) {
         if (key === '1') {
             getSupplier()
         } else if (key === '2') {
-            console.log('edit ' + supplierId)
+            editSupplier()
         } else {
             deleteSupplier(supplierId)
         }
     }
 
     const getSupplier = () => {
-        SupplierService.findById(supplierId).then((response) => {
-            modalShow.current?.showModal(response.data)
-        })
+        SupplierService.findById(supplierId)
+            .then((response) => {
+                modalShow.current?.showModal(response.data)
+            })
+            .catch((error) => {
+                api.open({
+                    message: 'Erro',
+                    description: 'Não foi possível encontrar o fornecedor',
+                    type: 'error',
+                })
+                console.error(error)
+            })
+    }
+
+    const editSupplier = () => {
+        SupplierService.findById(supplierId)
+            .then((response) => {
+                modalSup.current?.showModal(response.data)
+            })
+            .catch((error) => {
+                api.open({
+                    message: 'Erro',
+                    description: 'Não foi possível encontrar o fornecedor',
+                    type: 'error',
+                })
+                console.error(error)
+            })
     }
 
     const deleteSupplier = (id: string) => {
@@ -74,7 +98,7 @@ function ActionButtonSup({ supplierId }: Props) {
     return (
         <>
             {contextHolder}
-            <ModalEditSup title="Fornecedor" ref={modalSup} />
+            <ModalEditSup isEdit title="Fornecedor" ref={modalSup} />
             <ModalShowSup ref={modalShow} />
             <Dropdown menu={{ items, onClick }} placement="bottom" arrow>
                 <Button>Actions</Button>

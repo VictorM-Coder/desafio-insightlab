@@ -8,12 +8,16 @@ import {
     Input,
     InputNumber,
     Modal,
+    notification,
     Row,
     Space,
 } from 'antd'
 import SupplierTypeRequest from '../types/SupplierTypeRequest.ts'
+import { SupplierService } from '../services/SupplierService.ts'
+import { OnUpdatedEvent } from '../events/Events.ts'
 
 interface Props {
+    isEdit: boolean
     title: string
 }
 
@@ -21,16 +25,15 @@ export interface ModalSupInterface {
     showModal: (supplierRequest: SupplierTypeRequest | null) => void
 }
 
-const ModalEditSup = forwardRef(({ title }: Props, ref) => {
+const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
+    const [api, contextHolder] = notification.useNotification()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [supplier, setSupplier] = useState({} as SupplierTypeRequest)
-    const [isDisabled, setDisabled] = useState(false)
 
     useImperativeHandle(ref, () => ({
         showModal(supplierRequest: SupplierTypeRequest) {
             if (supplierRequest) {
                 setSupplier(supplierRequest)
-                setDisabled(true)
             }
             setIsModalOpen(true)
         },
@@ -44,7 +47,11 @@ const ModalEditSup = forwardRef(({ title }: Props, ref) => {
     }
 
     const onFinish: FormProps<SupplierTypeRequest>['onFinish'] = (values) => {
-        console.log('Success:', values)
+        if (isEdit) {
+            updateSupplier(values)
+        } else {
+            console.log('adição de sucesso')
+        }
     }
 
     const onFinishFailed: FormProps<SupplierTypeRequest>['onFinishFailed'] = (
@@ -53,215 +60,245 @@ const ModalEditSup = forwardRef(({ title }: Props, ref) => {
         console.log('Failed:', errorInfo)
     }
 
+    const updateSupplier = (values: SupplierTypeRequest) => {
+        SupplierService.update(supplier.id, values)
+            .then(() => {
+                setIsModalOpen(false)
+                values.id = supplier.id
+                throwUpdateEvent(values)
+            })
+            .catch((error) => {
+                api.open({
+                    message: 'Falha ao atualizar o fornecedor',
+                    type: 'error',
+                })
+                console.error(error)
+            })
+    }
+
+    const throwUpdateEvent = (supplierUpdated: SupplierTypeRequest) => {
+        const event = new CustomEvent<OnUpdatedEvent>('onUpdatedSupplier', {
+            bubbles: true,
+            detail: {
+                supplierUpdated: supplierUpdated,
+            },
+        })
+        document.dispatchEvent(event)
+    }
+
     return (
-        <Modal
-            width="800px"
-            style={{ top: 20 }}
-            title={title}
-            open={isModalOpen}
-            footer={null}
-            onCancel={handleCancel}
-        >
-            <Form
-                disabled={isDisabled}
-                name="basic"
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
-                // initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-                initialValues={supplier}
+        <>
+            {contextHolder}
+            <Modal
+                width="800px"
+                style={{ top: 20 }}
+                title={title}
+                open={isModalOpen}
+                footer={null}
+                onCancel={handleCancel}
+                destroyOnClose
             >
-                <Space direction="vertical">
-                    <Row gutter={40}>
-                        <Col span={24} md={12}>
-                            <Form.Item<SupplierTypeRequest>
-                                label="Nome"
-                                name="name"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Por favor, preencha o campo de nome',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item<SupplierTypeRequest>
-                                label="Nome Fantasia"
-                                name="companyName"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Por favor, preencha o campo de nome fantasia',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item<SupplierTypeRequest>
-                                label="CNPJ"
-                                name="cnpj"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Por favor, preencha o campo de CNPJ',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item<SupplierTypeRequest>
-                                label="E-Mail"
-                                name="email"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Por favor, preencha o campo de E-Mail',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                        <Col span={24} md={12}>
-                            <Form.Item<SupplierTypeRequest>
-                                label="CEP"
-                                name={['address', 'cep']}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Por favor, preencha o campo de CEP',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Row gutter={20}>
-                                <Col span={12}>
-                                    <Form.Item<SupplierTypeRequest>
-                                        label="Estado"
-                                        name={['address', 'state']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message:
-                                                    'Por favor, preencha o campo de estado',
-                                            },
-                                        ]}
-                                    >
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={12}>
-                                    <Form.Item<SupplierTypeRequest>
-                                        label="Cidade"
-                                        name={['address', 'city']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message:
-                                                    'Por favor, preencha o campo de cidade',
-                                            },
-                                        ]}
-                                    >
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-
-                            <Form.Item<SupplierTypeRequest>
-                                label="Rua"
-                                name={['address', 'street']}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            'Por favor, preencha o campo da rua',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Row gutter={20}>
-                                <Col span={12}>
-                                    <Form.Item<SupplierTypeRequest>
-                                        label="Bairro"
-                                        name={['address', 'neighborhood']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message:
-                                                    'Por favor, preencha o campo de bairro',
-                                            },
-                                        ]}
-                                    >
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={12}>
-                                    <Form.Item<SupplierTypeRequest>
-                                        label="Número"
-                                        name={['address', 'number']}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message:
-                                                    'Por favor, preencha o campo de número',
-                                            },
-                                        ]}
-                                    >
-                                        <InputNumber />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-
-                            <Form.Item<SupplierTypeRequest>
-                                label="Informação Adicional"
-                                name={['address', 'additionalInfo']}
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Divider />
-                    <Row justify="end">
-                        <Space size={40}>
-                            <Form.Item>
-                                <Button
-                                    type="default"
-                                    onClick={handleCancel}
-                                    size={'large'}
+                <Form
+                    name="basic"
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                    initialValues={supplier}
+                >
+                    <Space direction="vertical">
+                        <Row gutter={40}>
+                            <Col span={24} md={12}>
+                                <Form.Item<SupplierTypeRequest>
+                                    label="Nome"
+                                    name="name"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                'Por favor, preencha o campo de nome',
+                                        },
+                                    ]}
                                 >
-                                    Cancelar
-                                </Button>
-                            </Form.Item>
-                            <Form.Item>
-                                <Button
-                                    id="tetse"
-                                    type="primary"
-                                    htmlType="submit"
-                                    size={'large'}
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item<SupplierTypeRequest>
+                                    label="Nome Fantasia"
+                                    name="companyName"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                'Por favor, preencha o campo de nome fantasia',
+                                        },
+                                    ]}
                                 >
-                                    Adicionar Fornecedor
-                                </Button>
-                            </Form.Item>
-                        </Space>
-                    </Row>
-                </Space>
-            </Form>
-        </Modal>
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item<SupplierTypeRequest>
+                                    label="CNPJ"
+                                    name="cnpj"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                'Por favor, preencha o campo de CNPJ',
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Form.Item<SupplierTypeRequest>
+                                    label="E-Mail"
+                                    name="email"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                'Por favor, preencha o campo de E-Mail',
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col span={24} md={12}>
+                                <Form.Item<SupplierTypeRequest>
+                                    label="CEP"
+                                    name={['address', 'cep']}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                'Por favor, preencha o campo de CEP',
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Row gutter={20}>
+                                    <Col span={12}>
+                                        <Form.Item<SupplierTypeRequest>
+                                            label="Estado"
+                                            name={['address', 'state']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Por favor, preencha o campo de estado',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item<SupplierTypeRequest>
+                                            label="Cidade"
+                                            name={['address', 'city']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Por favor, preencha o campo de cidade',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Form.Item<SupplierTypeRequest>
+                                    label="Rua"
+                                    name={['address', 'street']}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                'Por favor, preencha o campo da rua',
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <Row gutter={20}>
+                                    <Col span={12}>
+                                        <Form.Item<SupplierTypeRequest>
+                                            label="Bairro"
+                                            name={['address', 'neighborhood']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Por favor, preencha o campo de bairro',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item<SupplierTypeRequest>
+                                            label="Número"
+                                            name={['address', 'number']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        'Por favor, preencha o campo de número',
+                                                },
+                                            ]}
+                                        >
+                                            <InputNumber />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Form.Item<SupplierTypeRequest>
+                                    label="Informação Adicional"
+                                    name={['address', 'additionalInfo']}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Divider />
+                        <Row justify="end">
+                            <Space size={40}>
+                                <Form.Item>
+                                    <Button
+                                        type="default"
+                                        onClick={handleCancel}
+                                        size={'large'}
+                                    >
+                                        Cancelar
+                                    </Button>
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button
+                                        id="tetse"
+                                        type="primary"
+                                        htmlType="submit"
+                                        size={'large'}
+                                    >
+                                        {isEdit
+                                            ? 'Atualizar Fornecedor'
+                                            : 'Adicionar Fornecedor'}
+                                    </Button>
+                                </Form.Item>
+                            </Space>
+                        </Row>
+                    </Space>
+                </Form>
+            </Modal>
+        </>
     )
 })
 
