@@ -51,21 +51,7 @@ function TableSup() {
             handleCreateSupplierEvent as EventListener,
         )
 
-        const getAll = async () => {
-            await SupplierService.getAll()
-                .then((response) => {
-                    setSuppliers(response.data.suppliers)
-                })
-                .catch((reason) => {
-                    openNotification(
-                        'Erro na busca',
-                        'Não foi possível carregar os fornecedores',
-                        'error',
-                    )
-                    console.error(reason)
-                })
-        }
-        getAll()
+        setPage(1)
 
         return () => {
             document.removeEventListener(
@@ -82,6 +68,30 @@ function TableSup() {
             )
         }
     }, [])
+
+    const [api, contextHolder] = notification.useNotification()
+    const [suppliers, setSuppliers] = useState<SupplierTypeResponse[]>([])
+    const [totalElements, setTotalElements] = useState<number>()
+    const [actualPage, setActualPage] = useState<number>()
+    const [pageSize, setPageSize] = useState<number>()
+
+    const setPage = (page: number) => {
+        SupplierService.getAll(page)
+            .then((response) => {
+                setSuppliers(response.data.suppliers)
+                setActualPage(response.data.actualPage)
+                setTotalElements(response.data.totalElements)
+                setPageSize(response.data.pageSize)
+            })
+            .catch((reason) => {
+                openNotification(
+                    'Erro na busca',
+                    'Não foi possível carregar os fornecedores',
+                    'error',
+                )
+                console.error(reason)
+            })
+    }
 
     const removeSupplier = (supplierId: string) => {
         setSuppliers((prevSuppliers) =>
@@ -111,8 +121,6 @@ function TableSup() {
         })
     }
 
-    const [api, contextHolder] = notification.useNotification()
-
     const openNotification = (
         message: string,
         description: string,
@@ -124,8 +132,6 @@ function TableSup() {
             type: type,
         })
     }
-
-    const [suppliers, setSuppliers] = useState<SupplierTypeResponse[]>([])
 
     const columns: TableProps<SupplierTypeResponse>['columns'] = [
         {
@@ -174,6 +180,14 @@ function TableSup() {
                 rowKey={(record) => record.id}
                 dataSource={suppliers}
                 columns={columns}
+                pagination={{
+                    defaultCurrent: 1,
+                    current: actualPage,
+                    pageSize: pageSize,
+                    total: totalElements,
+                    //todo pegar o total da API e mapear nas requisições
+                    onChange: (newPage) => setPage(newPage),
+                }}
             ></Table>
         </>
     )
