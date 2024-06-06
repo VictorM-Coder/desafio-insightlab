@@ -3,6 +3,7 @@ package org.example.api.controllers;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.example.api.dtos.requests.SupplierRequest;
+import org.example.api.dtos.responses.SupplierCompleteResponse;
 import org.example.api.dtos.responses.SupplierResponse;
 import org.example.api.dtos.responses.SuppliersPageResponse;
 import org.example.api.services.SupplierService;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("suppliers")
+@CrossOrigin
 public class SupplierController {
     private final SupplierService supplierService;
 
@@ -40,7 +42,7 @@ public class SupplierController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SupplierResponse> getById(@PathVariable @NotNull UUID id) {
+    public ResponseEntity<SupplierCompleteResponse> getById(@PathVariable @NotNull UUID id) {
         final var supplierResponse = supplierService.findById(id);
 
         return ResponseEntity

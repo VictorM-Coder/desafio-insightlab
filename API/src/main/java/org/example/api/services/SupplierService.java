@@ -2,6 +2,7 @@ package org.example.api.services;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.example.api.dtos.requests.SupplierRequest;
+import org.example.api.dtos.responses.SupplierCompleteResponse;
 import org.example.api.dtos.responses.SupplierResponse;
 import org.example.api.dtos.responses.SuppliersPageResponse;
 import org.example.api.mappers.SupplierMapper;
@@ -45,10 +46,10 @@ public class SupplierService {
         return new SuppliersPageResponse(suppliersResponse, pageNumber+1, totalPages, PAGE_SIZE);
     }
 
-    public SupplierResponse findById(UUID id) {
+    public SupplierCompleteResponse findById(UUID id) {
         SupplierModel supplierModel = findByIdOrThrowsEntityNotFoundException(id);
 
-        return supplierMapper.modelToResponse(supplierModel);
+        return supplierMapper.modelToCompleteResponse(supplierModel);
     }
 
     public void deleteById(UUID id) {

@@ -1,6 +1,7 @@
 package org.example.api.mappers;
 
 import org.example.api.dtos.requests.SupplierRequest;
+import org.example.api.dtos.responses.SupplierCompleteResponse;
 import org.example.api.dtos.responses.SupplierResponse;
 import org.example.api.models.AddressModel;
 import org.example.api.models.SupplierModel;
@@ -19,6 +20,8 @@ public interface SupplierMapper {
 
     @Mapping(target = "address", source = "address", qualifiedByName = "addressToString")
     SupplierResponse modelToResponse(SupplierModel supplierModel);
+
+    SupplierCompleteResponse modelToCompleteResponse(SupplierModel supplierModel);
 
     @Named("addressToString")
     static String addressToString(AddressModel addressModel) {
