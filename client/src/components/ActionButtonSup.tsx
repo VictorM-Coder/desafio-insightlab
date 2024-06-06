@@ -1,12 +1,15 @@
 import { Button, Dropdown, MenuProps, notification } from 'antd'
 import { SupplierService } from '../services/SupplierService.ts'
 import { OnDeletedEvent } from '../events/OnDeletedEvent.ts'
+import ModalSup, { ModalSupInterface } from './ModalSup.tsx'
+import { useRef } from 'react'
 
 interface Props {
     supplierId: string
 }
 
 function ActionButtonSup({ supplierId }: Props) {
+    const modalSup = useRef<ModalSupInterface>(null)
     const items: MenuProps['items'] = [
         {
             key: '1',
@@ -25,7 +28,7 @@ function ActionButtonSup({ supplierId }: Props) {
 
     const onClick: MenuProps['onClick'] = ({ key }) => {
         if (key === '1') {
-            console.log('more info ' + supplierId)
+            getSupplier()
         } else if (key === '2') {
             console.log('edit ' + supplierId)
         } else {
@@ -34,6 +37,12 @@ function ActionButtonSup({ supplierId }: Props) {
     }
 
     const [api, contextHolder] = notification.useNotification()
+
+    const getSupplier = () => {
+        SupplierService.findById(supplierId).then((response) => {
+            modalSup.current?.showModal(response.data)
+        })
+    }
 
     const deleteSupplier = (id: string) => {
         SupplierService.delete(id)
@@ -63,6 +72,7 @@ function ActionButtonSup({ supplierId }: Props) {
     return (
         <>
             {contextHolder}
+            <ModalSup title="Fornecedor" ref={modalSup} />
             <Dropdown menu={{ items, onClick }} placement="bottom" arrow>
                 <Button>Actions</Button>
             </Dropdown>
