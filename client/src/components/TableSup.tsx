@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react'
 import { SupplierService } from '../services/SupplierService.ts'
 import { IconType } from 'antd/es/notification/interface'
 import ActionButtonSup from './ActionButtonSup.tsx'
-import { OnDeletedEvent, OnUpdatedEvent } from '../events/Events.ts'
+import {
+    OnCreatedEvent,
+    OnDeletedEvent,
+    OnUpdatedEvent,
+} from '../events/Events.ts'
 import SupplierTypeRequest from '../types/SupplierTypeRequest.ts'
 import { mapSupplierTypeRequestToResponse } from '../utils/SupplierMapper.ts'
 
@@ -25,6 +29,13 @@ function TableSup() {
             openNotification('Fornecedor atualizado com sucesso', '', 'success')
         }
 
+        const handleCreateSupplierEvent = (
+            event: CustomEvent<OnCreatedEvent>,
+        ) => {
+            createSupplier(event.detail.supplierCreated)
+            openNotification('Fornecedor criado com sucesso', '', 'success')
+        }
+
         document.addEventListener(
             'onDeletedSupplier',
             handleDeleteSupplierEvent as EventListener,
@@ -33,6 +44,11 @@ function TableSup() {
         document.addEventListener(
             'onUpdatedSupplier',
             handleUpdateSupplierEvent as EventListener,
+        )
+
+        document.addEventListener(
+            'onCreatedSupplier',
+            handleCreateSupplierEvent as EventListener,
         )
 
         const getAll = async () => {
@@ -60,6 +76,10 @@ function TableSup() {
                 'onUpdatedSupplier',
                 handleUpdateSupplierEvent as EventListener,
             )
+            document.removeEventListener(
+                'onCreatedSupplier',
+                handleCreateSupplierEvent as EventListener,
+            )
         }
     }, [])
 
@@ -67,6 +87,14 @@ function TableSup() {
         setSuppliers((prevSuppliers) =>
             prevSuppliers.filter((supplier) => supplier.id !== supplierId),
         )
+    }
+
+    const createSupplier = (supplierTypeResponse: SupplierTypeResponse) => {
+        setSuppliers((prevSuppliers) => {
+            const newSupplers = [...prevSuppliers]
+            newSupplers.push(supplierTypeResponse)
+            return newSupplers
+        })
     }
 
     const updateSupplier = (supplierTypeRequest: SupplierTypeRequest) => {

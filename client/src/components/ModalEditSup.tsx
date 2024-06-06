@@ -14,7 +14,8 @@ import {
 } from 'antd'
 import SupplierTypeRequest from '../types/SupplierTypeRequest.ts'
 import { SupplierService } from '../services/SupplierService.ts'
-import { OnUpdatedEvent } from '../events/Events.ts'
+import { OnCreatedEvent, OnUpdatedEvent } from '../events/Events.ts'
+import SupplierTypeResponse from '../types/SupplierTypeResponse.ts'
 
 interface Props {
     isEdit: boolean
@@ -50,7 +51,7 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
         if (isEdit) {
             updateSupplier(values)
         } else {
-            console.log('adição de sucesso')
+            createSupplier(values)
         }
     }
 
@@ -58,6 +59,21 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
         errorInfo,
     ) => {
         console.log('Failed:', errorInfo)
+    }
+
+    const createSupplier = (values: SupplierTypeRequest) => {
+        SupplierService.create(values)
+            .then((supplierCreated) => {
+                setIsModalOpen(false)
+                throwCreateEvent(supplierCreated.data)
+            })
+            .catch((error) => {
+                api.open({
+                    message: 'Falha ao criar o fornecedor',
+                    type: 'error',
+                })
+                console.error(error)
+            })
     }
 
     const updateSupplier = (values: SupplierTypeRequest) => {
@@ -74,6 +90,16 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
                 })
                 console.error(error)
             })
+    }
+
+    const throwCreateEvent = (supplierCreated: SupplierTypeResponse) => {
+        const event = new CustomEvent<OnCreatedEvent>('onCreatedSupplier', {
+            bubbles: true,
+            detail: {
+                supplierCreated: supplierCreated,
+            },
+        })
+        document.dispatchEvent(event)
     }
 
     const throwUpdateEvent = (supplierUpdated: SupplierTypeRequest) => {

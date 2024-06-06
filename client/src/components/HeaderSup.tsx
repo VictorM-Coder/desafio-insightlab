@@ -17,7 +17,11 @@ function HeaderSup() {
             >
                 Adidionar Fornecedor
             </Button>
-            <ModalEditSup title="Adiconar fornecedor" ref={modalSup} />
+            <ModalEditSup
+                title="Adiconar fornecedor"
+                ref={modalSup}
+                isEdit={false}
+            />
         </header>
     )
 }
