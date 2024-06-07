@@ -37,7 +37,7 @@ public class SupplierService {
                 PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("name"))
         );
 
-        int totalPages = suppliers.getTotalPages();
+        long totalPages = suppliers.getTotalElements();
 
         final var suppliersResponse = suppliers.get()
                 .map(supplierMapper::modelToResponse)

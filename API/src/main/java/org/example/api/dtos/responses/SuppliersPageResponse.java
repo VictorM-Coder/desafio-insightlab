@@ -5,7 +5,7 @@ import java.util.List;
 public record SuppliersPageResponse(
         List<SupplierResponse> suppliers,
         int actualPage,
-        int totalPages,
+        long totalElements,
         int pageSize
 ) {
 }
