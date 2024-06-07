@@ -1,8 +1,8 @@
-import { Button, Dropdown, MenuProps, notification } from 'antd'
+import {Button, Dropdown, MenuProps, notification, Spin} from 'antd'
 import { SupplierService } from '../services/SupplierService.ts'
 import { OnDeletedEvent } from '../events/Events.ts'
 import ModalEditSup, { ModalSupInterface } from './ModalEditSup.tsx'
-import { useRef } from 'react'
+import {useRef, useState} from 'react'
 import ModalShowSup from './ModalShowSup.tsx'
 
 interface Props {
@@ -13,6 +13,7 @@ function ActionButtonSup({ supplierId }: Props) {
     const [api, contextHolder] = notification.useNotification()
     const modalSup = useRef<ModalSupInterface>(null)
     const modalShow = useRef<ModalSupInterface>(null)
+    const [loading, isLoading] = useState(false)
 
     const items: MenuProps['items'] = [
         {
@@ -31,6 +32,7 @@ function ActionButtonSup({ supplierId }: Props) {
     ]
 
     const onClick: MenuProps['onClick'] = ({ key }) => {
+        isLoading(true)
         if (key === '1') {
             getSupplier()
         } else if (key === '2') {
@@ -53,6 +55,7 @@ function ActionButtonSup({ supplierId }: Props) {
                 })
                 console.error(error)
             })
+            .finally(() => isLoading(false))
     }
 
     const editSupplier = () => {
@@ -68,6 +71,7 @@ function ActionButtonSup({ supplierId }: Props) {
                 })
                 console.error(error)
             })
+            .finally(() => isLoading(false))
     }
 
     const deleteSupplier = (id: string) => {
@@ -83,6 +87,7 @@ function ActionButtonSup({ supplierId }: Props) {
                 })
                 console.error(error)
             })
+            .finally(() => isLoading(false))
     }
 
     const throwDeleteEvent = () => {
@@ -98,6 +103,7 @@ function ActionButtonSup({ supplierId }: Props) {
     return (
         <>
             {contextHolder}
+            <Spin spinning={loading} fullscreen />
             <ModalEditSup isEdit title="Fornecedor" ref={modalSup} />
             <ModalShowSup ref={modalShow} />
             <Dropdown menu={{ items, onClick }} placement="bottom" arrow>

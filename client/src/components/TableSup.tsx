@@ -25,8 +25,8 @@ function TableSup() {
         const handleUpdateSupplierEvent = (
             event: CustomEvent<OnUpdatedEvent>,
         ) => {
-            updateSupplier(event.detail.supplierUpdated)
             openNotification('Fornecedor atualizado com sucesso', '', 'success')
+            updateSupplier(event.detail.supplierUpdated)
         }
 
         const handleCreateSupplierEvent = (
@@ -74,8 +74,10 @@ function TableSup() {
     const [totalElements, setTotalElements] = useState<number>()
     const [actualPage, setActualPage] = useState<number>()
     const [pageSize, setPageSize] = useState<number>()
+    const [loading, isLoading] = useState(true)
 
     const setPage = (page: number) => {
+        isLoading(true)
         SupplierService.getAll(page)
             .then((response) => {
                 setSuppliers(response.data.suppliers)
@@ -91,6 +93,7 @@ function TableSup() {
                 )
                 console.error(reason)
             })
+            .finally(() => isLoading(false))
     }
 
     const removeSupplier = (supplierId: string) => {
@@ -110,14 +113,16 @@ function TableSup() {
     const updateSupplier = (supplierTypeRequest: SupplierTypeRequest) => {
         const supplierTypeResponse =
             mapSupplierTypeRequestToResponse(supplierTypeRequest)
-        const index = suppliers.findIndex(
-            (supplier) => supplier.id === supplierTypeResponse.id,
-        )
-
         setSuppliers((prevSuppliers) => {
-            const newSuppliers = [...prevSuppliers]
-            newSuppliers[index] = supplierTypeResponse
-            return newSuppliers
+            const index = prevSuppliers.findIndex(
+                (supplier) => supplier.id === supplierTypeResponse.id,
+            )
+            if (index > -1) {
+                const newSuppliers = [...prevSuppliers]
+                newSuppliers[index] = supplierTypeResponse
+                return newSuppliers
+            }
+            return prevSuppliers
         })
     }
 
@@ -177,6 +182,7 @@ function TableSup() {
             {contextHolder}
             <Table
                 bordered={true}
+                loading={loading}
                 rowKey={(record) => record.id}
                 dataSource={suppliers}
                 columns={columns}

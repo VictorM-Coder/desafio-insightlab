@@ -10,7 +10,7 @@ import {
     Modal,
     notification,
     Row,
-    Space,
+    Space, Spin,
 } from 'antd'
 import SupplierTypeRequest from '../types/SupplierTypeRequest.ts'
 import { SupplierService } from '../services/SupplierService.ts'
@@ -30,6 +30,7 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     const [api, contextHolder] = notification.useNotification()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [supplier, setSupplier] = useState({} as SupplierTypeRequest)
+    const [loading, isLoading] = useState(false)
 
     useImperativeHandle(ref, () => ({
         showModal(supplierRequest: SupplierTypeRequest) {
@@ -48,6 +49,7 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     }
 
     const onFinish: FormProps<SupplierTypeRequest>['onFinish'] = (values) => {
+        isLoading(true)
         if (isEdit) {
             updateSupplier(values)
         } else {
@@ -58,7 +60,7 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     const onFinishFailed: FormProps<SupplierTypeRequest>['onFinishFailed'] = (
         errorInfo,
     ) => {
-        console.log('Failed:', errorInfo)
+        console.error('Failed:', errorInfo)
     }
 
     const createSupplier = (values: SupplierTypeRequest) => {
@@ -74,14 +76,15 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
                 })
                 console.error(error)
             })
+            .finally(() => isLoading(false))
     }
 
     const updateSupplier = (values: SupplierTypeRequest) => {
         SupplierService.update(supplier.id, values)
             .then(() => {
-                setIsModalOpen(false)
                 values.id = supplier.id
                 throwUpdateEvent(values)
+                setIsModalOpen(false)
             })
             .catch((error) => {
                 api.open({
@@ -90,6 +93,7 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
                 })
                 console.error(error)
             })
+            .finally(() => isLoading(false))
     }
 
     const throwCreateEvent = (supplierCreated: SupplierTypeResponse) => {
@@ -115,6 +119,7 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     return (
         <>
             {contextHolder}
+            <Spin spinning={loading} fullscreen />
             <Modal
                 width="800px"
                 style={{ top: 20 }}
