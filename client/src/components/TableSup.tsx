@@ -135,12 +135,12 @@ function TableSup() {
 
     const columns: TableProps<SupplierTypeResponse>['columns'] = [
         {
-            title: 'Name',
+            title: 'Nome',
             dataIndex: 'name',
             key: 'name',
         },
         {
-            title: 'Company',
+            title: 'Nome fantasia',
             dataIndex: 'companyName',
             key: 'companyName',
             responsive: ['sm'],
@@ -157,13 +157,13 @@ function TableSup() {
             responsive: ['md'],
         },
         {
-            title: 'Address',
+            title: 'Endereço',
             dataIndex: 'address',
             key: 'address',
             responsive: ['xl'],
         },
         {
-            title: 'Actions',
+            title: 'Ações',
             key: 'actions',
             dataIndex: 'actions',
             render: (_, { id }) => {
@@ -185,7 +185,6 @@ function TableSup() {
                     current: actualPage,
                     pageSize: pageSize,
                     total: totalElements,
-                    //todo pegar o total da API e mapear nas requisições
                     onChange: (newPage) => setPage(newPage),
                 }}
             ></Table>

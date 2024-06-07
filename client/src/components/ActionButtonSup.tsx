@@ -17,16 +17,16 @@ function ActionButtonSup({ supplierId }: Props) {
     const items: MenuProps['items'] = [
         {
             key: '1',
-            label: 'Show Details',
+            label: 'Ver detalhes',
         },
         {
             key: '2',
-            label: 'Edit',
+            label: 'Editar',
         },
         {
             key: '3',
             danger: true,
-            label: 'Delete',
+            label: 'Deletar',
         },
     ]
 
@@ -63,7 +63,7 @@ function ActionButtonSup({ supplierId }: Props) {
             .catch((error) => {
                 api.open({
                     message: 'Erro',
-                    description: 'Não foi possível encontrar o fornecedor',
+                    description: 'Não foi possível editar o fornecedor',
                     type: 'error',
                 })
                 console.error(error)
@@ -101,7 +101,7 @@ function ActionButtonSup({ supplierId }: Props) {
             <ModalEditSup isEdit title="Fornecedor" ref={modalSup} />
             <ModalShowSup ref={modalShow} />
             <Dropdown menu={{ items, onClick }} placement="bottom" arrow>
-                <Button>Actions</Button>
+                <Button>Ações</Button>
             </Dropdown>
         </>
     )

@@ -40,10 +40,6 @@ const ModalShowSup = forwardRef((_, ref) => {
                             <td className="cell-data">{supplier.cnpj}</td>
                         </tr>
                         <tr className="row-sup">
-                            <td className="cell-attribute">ID</td>
-                            <td className="cell-data">{supplier.id}</td>
-                        </tr>
-                        <tr className="row-sup">
                             <td className="cell-attribute">Nome da Empresa</td>
                             <td className="cell-data">
                                 {supplier.companyName}
