@@ -10,7 +10,8 @@ import {
     Modal,
     notification,
     Row,
-    Space, Spin,
+    Space,
+    Spin,
 } from 'antd'
 import SupplierTypeRequest from '../types/SupplierTypeRequest.ts'
 import { SupplierService } from '../services/SupplierService.ts'
@@ -29,7 +30,22 @@ export interface ModalSupInterface {
 const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     const [api, contextHolder] = notification.useNotification()
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [supplier, setSupplier] = useState({} as SupplierTypeRequest)
+    const [supplier, setSupplier] = useState<SupplierTypeRequest>({
+        name: '',
+        address: {
+            additionalInfo: '',
+            cep: '',
+            city: '',
+            neighborhood: '',
+            number: 0,
+            state: '',
+            street: '',
+        },
+        cnpj: '',
+        companyName: '',
+        email: '',
+        id: '',
+    })
     const [loading, isLoading] = useState(false)
 
     useImperativeHandle(ref, () => ({
@@ -178,9 +194,15 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
                                             message:
                                                 'Por favor, preencha o campo de CNPJ',
                                         },
+                                        {
+                                            pattern: new RegExp(
+                                                '^\\d{2}.\\d{3}.\\d{3}/\\d{4}-\\d{2}$',
+                                            ),
+                                            message: 'Formato inválido',
+                                        },
                                     ]}
                                 >
-                                    <Input />
+                                    <Input placeholder="XX.XXX.XXX/0001-XX" />
                                 </Form.Item>
 
                                 <Form.Item<SupplierTypeRequest>
@@ -191,6 +213,10 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
                                             required: true,
                                             message:
                                                 'Por favor, preencha o campo de E-Mail',
+                                        },
+                                        {
+                                            type: 'email',
+                                            message: 'Formato inválido',
                                         },
                                     ]}
                                 >
@@ -207,9 +233,15 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
                                             message:
                                                 'Por favor, preencha o campo de CEP',
                                         },
+                                        {
+                                            pattern: new RegExp(
+                                                '(^\\d{5})-?(\\d{3}$)',
+                                            ),
+                                            message: 'Formato inválido',
+                                        },
                                     ]}
                                 >
-                                    <Input />
+                                    <Input placeholder="00000-000" />
                                 </Form.Item>
 
                                 <Row gutter={20}>
