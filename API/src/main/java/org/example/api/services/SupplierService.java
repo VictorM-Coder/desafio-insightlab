@@ -34,7 +34,7 @@ public class SupplierService {
 
     public SuppliersPageResponse getAll(int pageNumber) {
         final Page<SupplierModel> suppliers = supplierRepository.findAll(
-                PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("createdAt"))
+                PageRequest.of(pageNumber, PAGE_SIZE, Sort.by(Sort.Direction.DESC,"createdAt"))
         );
 
         long totalPages = suppliers.getTotalElements();
