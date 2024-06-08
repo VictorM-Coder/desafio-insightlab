@@ -105,7 +105,8 @@ function TableSup() {
     const createSupplier = (supplierTypeResponse: SupplierTypeResponse) => {
         setSuppliers((prevSuppliers) => {
             const newSupplers = [...prevSuppliers]
-            newSupplers.push(supplierTypeResponse)
+            newSupplers.pop()
+            newSupplers.unshift(supplierTypeResponse)
             return newSupplers
         })
     }

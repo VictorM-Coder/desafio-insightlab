@@ -65,7 +65,6 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     }
 
     const onFinish: FormProps<SupplierTypeRequest>['onFinish'] = (values) => {
-        isLoading(true)
         if (isEdit) {
             updateSupplier(values)
         } else {
@@ -80,9 +79,10 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     }
 
     const createSupplier = (values: SupplierTypeRequest) => {
+        isLoading(true)
+        setIsModalOpen(false)
         SupplierService.create(values)
             .then((supplierCreated) => {
-                setIsModalOpen(false)
                 throwCreateEvent(supplierCreated.data)
             })
             .catch((error) => {
@@ -96,11 +96,12 @@ const ModalEditSup = forwardRef(({ isEdit, title }: Props, ref) => {
     }
 
     const updateSupplier = (values: SupplierTypeRequest) => {
+        isLoading(true)
+        setIsModalOpen(false)
         SupplierService.update(supplier.id, values)
             .then(() => {
                 values.id = supplier.id
                 throwUpdateEvent(values)
-                setIsModalOpen(false)
             })
             .catch((error) => {
                 api.open({

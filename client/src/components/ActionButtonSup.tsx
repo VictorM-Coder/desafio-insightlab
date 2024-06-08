@@ -1,8 +1,8 @@
-import {Button, Dropdown, MenuProps, notification, Spin} from 'antd'
+import { Button, Dropdown, MenuProps, notification, Spin } from 'antd'
 import { SupplierService } from '../services/SupplierService.ts'
 import { OnDeletedEvent } from '../events/Events.ts'
 import ModalEditSup, { ModalSupInterface } from './ModalEditSup.tsx'
-import {useRef, useState} from 'react'
+import { useRef, useState } from 'react'
 import ModalShowSup from './ModalShowSup.tsx'
 
 interface Props {
