@@ -7,7 +7,7 @@ function App() {
     return (
         <div className="App">
             <Flex justify="center">
-                <Space size={40} direction="vertical">
+                <Space size={40} direction="vertical" className="w-100">
                     <HeaderSup />
                     <TableSup />
                 </Space>
